@@ -1,50 +1,59 @@
-import re
-def same(item, target):
-  return len([c for (c, t) in zip(item, target) if c == t])
+import re  # importing regular expressions
 
-def build(pattern, words, seen, list):
-  return [word for word in words
-                 if re.search(pattern, word) and word not in seen.keys() and
-                    word not in list]
+""""
+AUTHOR :                  Sadeed Ahmad
+Program Description:      Ladder-gram program to transform a source word into a target word.
+Course:                   2810ICT - Software Technologies
+"""
 
-def find(word, words, seen, target, path):
-  list = []
-  for i in range(len(word)):
-    list += build(word[:i] + "." + word[i + 1:], words, seen, list)
-  if len(list) == 0:
-    return False
-  list = sorted([(same(w, target), w) for w in list])
-  for (match, item) in list:
-    if match >= len(target) - 1:
-      if match == len(target) - 1:
-        path.append(item)
-      return True
-    seen[item] = True
-  for (match, item) in list:
-    path.append(item)
-    if find(item, words, seen, target, path):
-      return True
-    path.pop()
 
-fname = input("Enter dictionary name: ")
-file = open(fname)
-lines = file.readlines()
-while True:
-  start = input("Enter start word:")
-  words = []
-  for line in lines:
-    word = line.rstrip()
-    if len(word) == len(start):
-      words.append(word)
-  target = input("Enter target word:")
-  break
 
-count = 0
-path = [start]
-seen = {start : True}
-if find(start, words, seen, target, path):
-  path.append(target)
-  print(len(path) - 1, path)
-else:
-  print("No path found")
 
+
+""" This function asks the user to enter the dictionary name
+and then call the load_file() function, passing the entered file name
+as argument. If the file is not found, then it raises the file not 
+found error"""
+
+def file_check():
+  while True:
+    try:
+      fname = input("Please enter the dictionary name: ")
+      return load_file(fname)
+    except FileNotFoundError:
+      print("The file you have entered can not be found. Please try again. ")
+
+
+"""This function opens the file name passed to it by the file_check 
+function above"""
+
+def load_file(file):
+  return open(file, "r")
+
+
+""" This function asks the user for a Start word and validates the input.
+It re-prompts the user if input is invalid."""
+
+def start_word_checker(word):as
+  while True:
+    if len(word) < 2:
+      word = input("Start Word must be more than 2 letters. Please enter a valid start word. ")
+    elif word.isalpha() == False:
+      word = input("Start Word must consist of alphabets only. Please enter a valid start word. ")
+    elif word.isalpha() == True:
+      word.replace(" ", "")
+      return word
+
+
+""" This function asks the user for a Target word and validates the input.
+It re-prompts the user if input is invalid."""
+
+def target_word_checker(word):
+  while True:
+    if len(word) != len(start):
+      word = input("Target word must be of same length as start word. Please enter a valid target word. ")
+    elif word.isalpha() == False:
+      word = input("Target Word must consist of alphabets only. Please enter a valid target word. ")
+    elif word.isalpha():
+      word.replace(" ", "")
+      return word
