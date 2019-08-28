@@ -121,3 +121,44 @@ def find(word, words, seen, target, path):
     path.pop() # inbuilt pop() function is being called, to remove the last word in path if a path for the item is not found.
 
 
+file = file_check()  # file_check() function defined above is being called here.
+lines = file.readlines()  # readlines() function is being called on the dictionary file.
+
+
+"""
+This function asks the user for required inputs while also validating those inputs by 
+applying the functions defined above. 
+"""
+while True:
+  word = input("Please enter the start word:")  # asks the user for start word input
+  start = (start_word_checker(word))            # Validates the start word input by applying start_word_checker function.
+  word = input("Please enter the target word:") # asks the user for target word input
+  target = (target_word_checker(word))          # Validates the target word input by applying target_word_checker function.
+
+  #asks the user if they want to ignore any words during the target process or they can leave this empty.
+  excluded_list = str(input("Please enter the words to ignore, separated by commas or leave this field empty\n"
+                            "Here is an example of how to format your input: \ndeep, heap, beep\n")).replace(" ","")
+  # builds the list of all the words to ignore  as given by user by applying excluded_words_build() function.
+  excluded_words = excluded_words_build(excluded_list)
+
+  # builds the words list by not having any excluded words in that list.
+  words = []
+  for line in lines:
+    word = line.rstrip()
+    if len(word) == len(start) and word not in excluded_words:
+      words.append(word)
+  break
+
+
+
+count = 0
+path = [start]
+seen = {start : True}
+
+# Calls the find() function for the first iteration.
+if find(start, words, seen, target, path):
+    path.append(target)   # appends the target to the path list.
+    print(len(path) - 1, path) # prints the path list and the length of the path.
+else:
+  print("No path found")
+
