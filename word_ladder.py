@@ -57,3 +57,67 @@ def target_word_checker(word):
     elif word.isalpha():
       word.replace(" ", "")
       return word
+
+
+
+""" This function builds the list of words which the user wants to omits from the target word process. """
+
+def excluded_words_build(words):
+  excluded_words = words.split(',')
+  return excluded_words
+
+
+"""This function returns the number of letters of each item which
+ matches the target word. """
+
+def same(item, target):
+  return len([c for (c, t) in zip(item, target) if c == t])
+
+
+"""This function returns a list of words that matches the pattern which is provided
+as an input. It ensures that the word is not already in the seen dictionary. """
+
+def build(pattern, words, seen, list):
+  return [word for word in words
+                 if re.search(pattern, word) and word not in seen.keys() and
+                 word not in list]
+
+
+""" This function iterates over each word and moves gradually towards the target"""
+
+def find(word, words, seen, target, path):
+  matched_letters = []
+  list = []
+
+  # same() function is being called here.
+  if same(word, target) > 0:
+    # after comparing the new start word and the target word, it returns a list of indexes of letters which are matched.
+    matched_letters = [i for i, x in enumerate(zip(word, target)) if all(y == x[0] for y in x)]
+
+
+  for i in range(len(word)):
+    if i not in matched_letters: # It builds the pattern for letter positions which have not already been found
+      # It builds the list of words matching the pattern where letter has not been found.
+      list += build(word[:i] + "." + word[i + 1:], words, seen, list)
+  # if the list is empty, exit the iteration.
+  if len(list) == 0:
+    return False
+
+  # this sorts the list alphabatically and by number of matches.
+  list = sorted([(same(w, target), w) for w in list], reverse=True)
+  for (match, item) in list:
+    # if word matches target or 1 letter off target.
+    if match >= len(target) - 1:
+      if match == len(target) - 1:
+        # it appends the word to the path and exit as the last word has been found.
+        path.append(item)
+      return True
+    # This marks each word in the current list to True, so it is excluded from the future search.
+    seen[item] = True
+  for (match, item) in list:
+    path.append(item)   # appends the item to the path.
+    if find(item, words, seen, target, path):  # recursively calling itself.
+      return True
+    path.pop() # inbuilt pop() function is being called, to remove the last word in path if a path for the item is not found.
+
+
