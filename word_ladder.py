@@ -34,7 +34,7 @@ def load_file(file):
 """ This function asks the user for a Start word and validates the input.
 It re-prompts the user if input is invalid."""
 
-def start_word_checker(word):as
+def start_word_checker(word):
   while True:
     if len(word) < 2:
       word = input("Start Word must be more than 2 letters. Please enter a valid start word. ")
